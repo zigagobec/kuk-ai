@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import { register } from './views/auth';
 
 const app = express();
 const PORT = 3000;
@@ -13,6 +14,8 @@ app.get("/api/v1/health", (req, res) => {
     sok: "grozdni"
   });
 });
+
+app.post('api/v1/auth/register', register)
 
 app.listen(PORT, () => {
     console.log("App is running")

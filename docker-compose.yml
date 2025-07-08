@@ -22,6 +22,7 @@ services:
     environment:
       NODE_ENV: development
       DATABASE_URL: "postgresql://postgres:example@db:5432/postgres"
+      JWT_SECRET: "test123"
     stdin_open: true
     tty: true
     command: npm run dev
