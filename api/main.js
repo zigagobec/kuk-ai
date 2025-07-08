@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { register } from './views/auth';
+import { register } from './views/auth.js';
 
 const app = express();
 const PORT = 3000;
