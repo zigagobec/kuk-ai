@@ -1,6 +1,5 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { useReducer } from 'react';
 
 export async function register(req, res) {
     const { email, name, password} = req.body;
