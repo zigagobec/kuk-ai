@@ -15,7 +15,7 @@ app.get("/api/v1/health", (req, res) => {
   });
 });
 
-app.post('api/v1/auth/register', register)
+app.post('/api/v1/auth/register', register)
 
 app.listen(PORT, () => {
     console.log("App is running")
