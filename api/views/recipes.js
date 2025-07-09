@@ -5,7 +5,7 @@ export async function saveRecipe(req, res) {
         const { title, ingredients, instructions, totalTime } = req.body;
 
         const recipe = await prisma.recipe.create({
-            data: { title, ingredients, instructions, totalTime }
+            data: { title, ingredients, instructions, totalTime, userId: req.user.id }
         });
 
         if (recipe) {
