@@ -4,6 +4,7 @@ import { register } from './views/auth.js';
 import { login } from './views/auth.js';
 import { saveRecipe } from './views/recipes.js';
 import { jwtMiddleware } from './util.js';
+import { generateRecipe } from './views/ai.js';
 
 const app = express();
 const PORT = 3000;
@@ -22,6 +23,8 @@ app.post('/api/v1/auth/register', register)
 app.post('/api/v1/auth/login', login);
 
 app.post('/api/v1/recipes', jwtMiddleware, saveRecipe);
+
+app.post('/api/v1/ai/generate-recipe', generateRecipe);
 
 app.listen(PORT, () => {
     console.log("App is running")

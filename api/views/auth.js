@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { cleanupUser, prisma } from '../util.js';
+import { prisma, cleanupUser } from '../util.js';
 
 export async function register(req, res) {
     try {
@@ -16,7 +16,6 @@ export async function register(req, res) {
         }
 
         const hashedPassword = bcrypt.hashSync(password, 10);
-
         const user = await prisma.user.create({
             data: { email, name, password: hashedPassword }
         });
@@ -38,6 +37,7 @@ export async function register(req, res) {
 }
 
 export async function login(req, res) {
+    
     try {
         const { email, password } = req.body;
         const existingUser = await prisma.user.findUnique({
