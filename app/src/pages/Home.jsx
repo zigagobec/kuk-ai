@@ -2,13 +2,14 @@ import { useState } from "react";
 import { RecipeCard } from "../components/RecipeCard";
 import Lottie from "lottie-react";
 import FryingPan from "../assets/fry.json";
-import { aiGenerateRecipe } from "../services/api";
+import { aiGenerateRecipe, aiRefineRecipe } from "../services/api";
 import { toast } from 'react-toastify';
 
 function Home() {
   const [prompt, setPrompt] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [recipe, setRecipe] = useState(null);
+  const [isRefine, setIsRefine] = useState(false);
 
   async function generateRecipe() {
     if (!prompt.trim() || isLoading) {
@@ -17,9 +18,19 @@ function Home() {
 
     setIsLoading(true);
     try {
-      const aiResponse = await aiGenerateRecipe({
-        prompt: prompt.trim()
-      });
+      let aiResponse;
+      if (isRefine && recipe) {
+        aiResponse = await aiRefineRecipe({
+          prompt: prompt.trim(),
+          recipe
+        })
+      }
+      else {
+         aiResponse = await aiGenerateRecipe({
+          prompt: prompt.trim()
+        });
+      }
+      setIsRefine(true)
       setRecipe(aiResponse.recipe);
     } catch (error) {
       if (error.response?.status == 422) {
@@ -39,26 +50,26 @@ function Home() {
         {isLoading ?
           <div className="text-center mb-12 flex flex-col items-center justify-center">
             <Lottie
-             animationData={FryingPan}
-             loop
-             className="w-60 h-60"
-             speed={1.5}
+              animationData={FryingPan}
+              loop
+              className="w-60 h-60"
+              speed={1.5}
             />
             <span className="text-white text-xl font-medium">
               Your recipe is cooking
             </span>
           </div>
-        : !recipe ? (
-          <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
-              Welcome to KukAI
-            </h1>
-          </div>
-        ) : (
-          <div className="max-w-5xl mx-auto">
-            <RecipeCard recipe={recipe} hasSave={true} />
-          </div>
-        )}
+          : !recipe ? (
+            <div className="text-center mb-12">
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent">
+                Welcome to KukAI
+              </h1>
+            </div>
+          ) : (
+            <div className="max-w-5xl mx-auto">
+              <RecipeCard recipe={recipe} hasSave={true} />
+            </div>
+          )}
       </div>
 
       <div className="fixed bottom-0 left-0 right-0 bg-white/5 backdrop-blur-lg border-t border-white/15 p-4">
@@ -74,7 +85,11 @@ function Home() {
                     generateRecipe();
                   }
                 }}
-                placeholder="Enter ingredients separated by commas (e.g., chicken, garlic, rice, tomatoes)..."
+                placeholder={
+                  isRefine
+                  ? "Refine recipe (e.g., +tomato, -mango)..."
+                  : "Enter ingredients separated by commas (e.g., chicken, garlic, rice, tomatoes)..."
+                }
                 className="w-full px-4 py-2.5 bg-white/10 backdrop-blur-lg border border-white/25 rounded-md text-white placeholder-gray-300 focus:outline-none focus:border-purple-400/50 focus:bg-white/15 transition-all duration-200 text-sm"
                 disabled={isLoading}
               />

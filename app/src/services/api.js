@@ -76,3 +76,11 @@ export async function aiGenerateRecipe({ prompt }) {
   });
   return response.data;
 }
+
+export async function aiRefineRecipe({ prompt, recipe }) {
+  const response = await api.post("api/v1/ai/refine-recipe", {
+    prompt,
+    recipe
+  });
+  return response.data;
+}
